@@ -2,7 +2,7 @@ name: Zara Stock Monitor
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # toutes les 5 minutes
+    - cron: "*/30 * * * *"  # toutes les 30 minutes (fiable sur GitHub Actions)
   workflow_dispatch:          # bouton manuel dans GitHub si besoin
 
 jobs:
@@ -22,7 +22,6 @@ jobs:
       - name: Installer Playwright + Chromium
         run: playwright install chromium --with-deps
 
-      - name: Lancer le bot (une vérif)
-        env:
-          RUN_ONCE: "1"
+      - name: Lancer le bot (boucle 25 min)
         run: python zara_bot.py
+        timeout-minutes: 28
