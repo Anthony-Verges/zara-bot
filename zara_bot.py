@@ -76,10 +76,10 @@ def check(pw):
             log.info("Modale géoloc supprimée via JS.")
             page.wait_for_timeout(500)
 
-        # Cliquer sur "Ajouter" pour faire apparaître le sélecteur de tailles
+        # Cliquer sur "Ajouter" via JS (contourne toute modale qui intercepte les clics)
         try:
             page.wait_for_selector("button[data-qa-action='add-to-cart']", timeout=15_000)
-            page.click("button[data-qa-action='add-to-cart']")
+            page.evaluate("document.querySelector(\"button[data-qa-action='add-to-cart']\").click()")
             page.wait_for_timeout(random.randint(2000, 3000))
         except Exception as e:
             log.warning(f"Bouton Ajouter introuvable : {e}")
