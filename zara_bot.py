@@ -64,6 +64,33 @@ def check(pw):
                 page.wait_for_timeout(1000)
                 break
 
+        # Fermer la modale de géolocalisation (apparaît sur les serveurs hors France)
+        modal = page.query_selector(".geolocation-modal")
+        if modal:
+            log.info("Modale géoloc détectée, tentative de fermeture...")
+            closed = False
+            for sel in [
+                ".geolocation-modal button",
+                ".geolocation-modal a",
+                ".zds-modal button",
+            ]:
+                try:
+                    btns = page.query_selector_all(sel)
+                    for btn in btns:
+                        if btn.is_visible():
+                            log.info(f"Clic sur : '{btn.inner_text().strip()}'")
+                            btn.click()
+                            page.wait_for_timeout(1500)
+                            closed = True
+                            break
+                    if closed:
+                        break
+                except Exception:
+                    pass
+            if not closed:
+                page.keyboard.press("Escape")
+                page.wait_for_timeout(1000)
+
         # Cliquer sur "Ajouter" pour faire apparaître le sélecteur de tailles
         try:
             page.wait_for_selector("button[data-qa-action='add-to-cart']", timeout=15_000)
