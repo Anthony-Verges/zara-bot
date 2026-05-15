@@ -1,0 +1,28 @@
+name: Zara Stock Monitor
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # toutes les 5 minutes
+  workflow_dispatch:          # bouton manuel dans GitHub si besoin
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+
+      - name: Installer Playwright + Chromium
+        run: playwright install chromium --with-deps
+
+      - name: Lancer le bot (une vérif)
+        env:
+          RUN_ONCE: "1"
+        run: python zara_bot.py
